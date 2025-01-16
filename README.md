@@ -43,7 +43,7 @@ This is a Spring Boot-based bank application that provides various banking servi
 
 2. **Build the JAR file**:
    ```sh
-   ./gradlew build
+   gradlew build
    ```
 
 3. **Build the Docker image**:
@@ -51,9 +51,9 @@ This is a Spring Boot-based bank application that provides various banking servi
    docker build -t bank-application .
    ```
 
-4. **Run the Docker container**:
+4. **Run the application using Docker Composer**:
    ```sh
-   docker run -p 8080:8080 bank-application
+   docker compose up
    ```
 
 5. **Access the application**:
@@ -62,14 +62,14 @@ This is a Spring Boot-based bank application that provides various banking servi
 ### Running Tests
 To run the unit tests, use the following command:
 ```sh
-./gradlew test
+gradlew test
 ```
 ### Note
 - BankApplicationTests.contextLoads() test will fail if you are running application while running the test
 
 To run the integration tests, use the following command:
 ```sh
-./gradlew test integrationTest
+gradlew test integrationTest
 ```
 
 ## API Documentation
