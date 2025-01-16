@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -61,8 +62,9 @@ public class CurrencyConversionServiceUT {
 
         BigDecimal convertedAmount = currencyConversionService.convert(account, CurrencyEnum.valueOf(fromCurrency), CurrencyEnum.valueOf(toCurrency), amount);
 
-        assertEquals(expectedConvertedAmount.setScale(2, BigDecimal.ROUND_HALF_UP), convertedAmount);
-        assertEquals(account.getBalances().get(CurrencyEnum.valueOf(toCurrency)).setScale(2, BigDecimal.ROUND_HALF_UP), account.getBalances().get(CurrencyEnum.valueOf(toCurrency)));
+
+        assertEquals(expectedConvertedAmount.setScale(2, RoundingMode.HALF_UP), convertedAmount);
+        assertEquals(account.getBalances().get(CurrencyEnum.valueOf(toCurrency)).setScale(2, RoundingMode.HALF_UP), account.getBalances().get(CurrencyEnum.valueOf(toCurrency)));
     }
 
     @ParameterizedTest

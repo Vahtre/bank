@@ -7,6 +7,7 @@ import com.testassignment.bank.entity.Transaction;
 import com.testassignment.bank.enums.CurrencyEnum;
 import com.testassignment.bank.enums.TransactionType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class AccountService {
 
     private final AccountDAO accountDAO;
