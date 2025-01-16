@@ -33,7 +33,7 @@ public class AccountController {
 
     @PostMapping("/{accountId}/deposit")
     public AccountDTO addMoney(@PathVariable Long accountId, @Valid @RequestBody MoneyRequestDTO request) {
-        return accountService.addMoney(accountId, request.getCurrency(), BigDecimal.valueOf(request.getAmount()));
+        return accountService.depositMoney(accountId, request.getCurrency(), BigDecimal.valueOf(request.getAmount()));
     }
 
     @PostMapping("/{accountId}/debit")

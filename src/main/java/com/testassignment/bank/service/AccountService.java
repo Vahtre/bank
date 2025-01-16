@@ -45,37 +45,35 @@ public class AccountService {
         return AccountDTO.fromEntity(savedAccount);
     }
 
-    public AccountDTO addMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
-        Account account = accountDAO.findById(accountId).orElseThrow();
-        account.getBalances().merge(currency, amount, BigDecimal::add);
-        accountDAO.save(account);
-
-        transactionService.saveTransaction(accountId, currency.name(), amount, TransactionType.DEPOSIT);
-
-        restTemplate.getForObject("https://httpstat.us/200", String.class);
-
-        return AccountDTO.fromEntity(account);
+    public AccountDTO depositMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
+        return updateBalance(accountId, currency, amount, TransactionType.DEPOSIT);
     }
 
     public AccountDTO debitMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
+        return updateBalance(accountId, currency, amount, TransactionType.DEBIT);
+    }
+
+    private AccountDTO updateBalance(Long accountId, CurrencyEnum currency, BigDecimal amount, TransactionType transactionType) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Amount must be positive");
         }
+
         Account account = accountDAO.findById(accountId).orElseThrow();
         BigDecimal roundedAmount = roundToTwoDecimalPlaces(amount);
         BigDecimal currentBalance = account.getBalances().getOrDefault(currency, BigDecimal.ZERO);
 
-        if (currentBalance.compareTo(roundedAmount) < 0) {
+        if (transactionType == TransactionType.DEBIT && currentBalance.compareTo(roundedAmount) < 0) {
             throw new IllegalArgumentException("Insufficient funds");
         }
 
-        account.getBalances().computeIfPresent(currency, (k, v) -> v.subtract(roundedAmount));
-        accountDAO.save(account);
+        if (transactionType == TransactionType.DEBIT) {
+            account.getBalances().computeIfPresent(currency, (k, v) -> v.subtract(roundedAmount));
+        } else {
+            account.getBalances().merge(currency, roundedAmount, BigDecimal::add);
+        }
 
-        transactionService.saveTransaction(accountId, currency.name(), roundedAmount.negate(), TransactionType.DEBIT);
+        accountDAO.save(account);
+        transactionService.saveTransaction(accountId, currency.name(), transactionType == TransactionType.DEBIT ? roundedAmount.negate() : roundedAmount, transactionType);
 
         restTemplate.getForObject("https://httpstat.us/200", String.class);
 

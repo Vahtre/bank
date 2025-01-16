@@ -84,7 +84,7 @@ public class AccountServiceUT {
         // Initial balance
         BigDecimal initialBalance = account.getBalances().getOrDefault(currency, BigDecimal.ZERO);
 
-        AccountDTO accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), amount);
+        AccountDTO accountDTO = accountService.depositMoney(1L, CurrencyEnum.valueOf(currency), amount);
 
         // Final balance
         BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
@@ -114,14 +114,14 @@ public class AccountServiceUT {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("OK");
 
         // First time adding money (100)
-        AccountDTO accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), firstAmount);
+        AccountDTO accountDTO = accountService.depositMoney(1L, CurrencyEnum.valueOf(currency), firstAmount);
         assertNotNull(accountDTO);
         assertEquals(firstAmount, accountDTO.getBalances().get(CurrencyEnum.valueOf(currency)));
         verify(accountDAO, times(1)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(eq(1L), eq(currency), eq(firstAmount), eq(TransactionType.DEPOSIT));
 
         // Second time adding money (50, 150 in total)
-        accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), secondAmount);
+        accountDTO = accountService.depositMoney(1L, CurrencyEnum.valueOf(currency), secondAmount);
         assertNotNull(accountDTO);
         assertEquals(firstAmount.add(secondAmount), accountDTO.getBalances().get(CurrencyEnum.valueOf(currency)));
         verify(accountDAO, times(2)).save(any(Account.class));
@@ -148,7 +148,7 @@ public class AccountServiceUT {
         BigDecimal initialBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            accountService.addMoney(1L, CurrencyEnum.valueOf(currency), amount);
+            accountService.depositMoney(1L, CurrencyEnum.valueOf(currency), amount);
         });
 
         BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
