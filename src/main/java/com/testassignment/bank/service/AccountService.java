@@ -35,9 +35,9 @@ public class AccountService {
         account.setAccountNumber(accountNumber);
 
         // Initialize account balances with 0.0 for no advantage and disadvantage :)
-        Map<String, BigDecimal> balances = new HashMap<>();
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
         for (CurrencyEnum currency : CurrencyEnum.values()) {
-            balances.put(currency.name(), BigDecimal.ZERO);
+            balances.put(currency, BigDecimal.ZERO);
         }
         account.setBalances(balances);
 
@@ -50,7 +50,7 @@ public class AccountService {
             throw new IllegalArgumentException("Amount must be positive");
         }
         Account account = accountDAO.findById(accountId).orElseThrow();
-        account.getBalances().merge(currency.name(), amount, BigDecimal::add);
+        account.getBalances().merge(currency, amount, BigDecimal::add);
         accountDAO.save(account);
 
         transactionService.saveTransaction(accountId, currency.name(), amount, TransactionType.DEPOSIT);
@@ -66,13 +66,13 @@ public class AccountService {
         }
         Account account = accountDAO.findById(accountId).orElseThrow();
         BigDecimal roundedAmount = roundToTwoDecimalPlaces(amount);
-        BigDecimal currentBalance = account.getBalances().getOrDefault(currency.name(), BigDecimal.ZERO);
+        BigDecimal currentBalance = account.getBalances().getOrDefault(currency, BigDecimal.ZERO);
 
         if (currentBalance.compareTo(roundedAmount) < 0) {
             throw new IllegalArgumentException("Insufficient funds");
         }
 
-        account.getBalances().computeIfPresent(currency.name(), (k, v) -> v.subtract(roundedAmount));
+        account.getBalances().computeIfPresent(currency, (k, v) -> v.subtract(roundedAmount));
         accountDAO.save(account);
 
         transactionService.saveTransaction(accountId, currency.name(), roundedAmount.negate(), TransactionType.DEBIT);
@@ -82,7 +82,7 @@ public class AccountService {
         return AccountDTO.fromEntity(account);
     }
 
-    public Map<String, BigDecimal> getAccountBalance(Long accountId) {
+    public Map<CurrencyEnum, BigDecimal> getAccountBalance(Long accountId) {
         Account account = accountDAO.findById(accountId).orElseThrow();
         return account.getBalances();
     }

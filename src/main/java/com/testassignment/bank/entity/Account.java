@@ -1,5 +1,6 @@
 package com.testassignment.bank.entity;
 
+import com.testassignment.bank.enums.CurrencyEnum;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -18,9 +19,10 @@ public class Account {
 
     @ElementCollection
     @CollectionTable(name = "account_balance", joinColumns = @JoinColumn(name = "account_id"))
+    @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "currency")
     @Column(name = "balance")
-    private Map<String, BigDecimal> balances = new HashMap<>();
+    private Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
 
     public Long getId() {
         return id;
@@ -38,11 +40,11 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
-    public Map<String, BigDecimal> getBalances() {
+    public Map<CurrencyEnum, BigDecimal> getBalances() {
         return balances;
     }
 
-    public void setBalances(Map<String, BigDecimal> balances) {
+    public void setBalances(Map<CurrencyEnum, BigDecimal> balances) {
         this.balances = balances;
     }
 }

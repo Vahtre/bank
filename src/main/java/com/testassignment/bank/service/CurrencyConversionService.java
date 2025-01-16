@@ -18,7 +18,7 @@ public class CurrencyConversionService {
     }
 
     public BigDecimal convert(Account account, CurrencyEnum fromCurrency, CurrencyEnum toCurrency, BigDecimal amount) {
-        BigDecimal currentBalance = account.getBalances().getOrDefault(fromCurrency.name(), BigDecimal.ZERO);
+        BigDecimal currentBalance = account.getBalances().getOrDefault(fromCurrency, BigDecimal.ZERO);
 
         if (currentBalance.compareTo(amount) < 0) {
             throw new IllegalArgumentException("Insufficient funds");
@@ -28,8 +28,8 @@ public class CurrencyConversionService {
                 .map(rate -> amount.multiply(rate.getRate()).setScale(2, RoundingMode.HALF_UP))
                 .orElseThrow(() -> new IllegalArgumentException("Conversion rate not found"));
 
-        account.getBalances().computeIfPresent(fromCurrency.name(), (k, v) -> v.subtract(amount));
-        account.getBalances().compute(toCurrency.name(), (k, v) -> v == null ? convertedAmount : v.add(convertedAmount));
+        account.getBalances().computeIfPresent(fromCurrency, (k, v) -> v.subtract(amount));
+        account.getBalances().compute(toCurrency, (k, v) -> v == null ? convertedAmount : v.add(convertedAmount));
 
         return convertedAmount;
     }

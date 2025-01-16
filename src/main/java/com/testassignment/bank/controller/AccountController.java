@@ -5,6 +5,7 @@ import com.testassignment.bank.dto.CreateAccountRequestDTO;
 import com.testassignment.bank.dto.ExchangeRequestDTO;
 import com.testassignment.bank.dto.MoneyRequestDTO;
 import com.testassignment.bank.entity.Transaction;
+import com.testassignment.bank.enums.CurrencyEnum;
 import com.testassignment.bank.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class AccountController {
     }
 
     @GetMapping("/{accountId}/balance")
-    public Map<String, BigDecimal> getAccountBalance(@PathVariable Long accountId) {
+    public Map<CurrencyEnum, BigDecimal> getAccountBalance(@PathVariable Long accountId) {
         return accountService.getAccountBalance(accountId);
     }
 

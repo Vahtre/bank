@@ -1,6 +1,7 @@
 package com.testassignment.bank.dto;
 
 import com.testassignment.bank.entity.Account;
+import com.testassignment.bank.enums.CurrencyEnum;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -10,7 +11,7 @@ public class AccountDTO {
 
     private Long id;
     private String accountNumber;
-    private Map<String, BigDecimal> balances;
+    private Map<CurrencyEnum, BigDecimal> balances;
 
     public Long getId() {
         return id;
@@ -28,11 +29,11 @@ public class AccountDTO {
         this.accountNumber = accountNumber;
     }
 
-    public Map<String, BigDecimal> getBalances() {
+    public Map<CurrencyEnum, BigDecimal> getBalances() {
         return balances;
     }
 
-    public void setBalances(Map<String, BigDecimal> balances) {
+    public void setBalances(Map<CurrencyEnum, BigDecimal> balances) {
         this.balances = balances;
     }
 
@@ -40,13 +41,7 @@ public class AccountDTO {
         AccountDTO dto = new AccountDTO();
         dto.setId(account.getId());
         dto.setAccountNumber(account.getAccountNumber());
-
-        Map<String, BigDecimal> balances = account.getBalances().entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-        dto.setBalances(balances);
+        dto.setBalances(account.getBalances());
 
         return dto;
     }

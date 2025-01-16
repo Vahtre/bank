@@ -87,10 +87,10 @@ public class AccountServiceUT {
         AccountDTO accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), amount);
 
         // Final balance
-        BigDecimal finalBalance = account.getBalances().get(currency);
+        BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertNotNull(accountDTO);
-        assertEquals(amount, accountDTO.getBalances().get(currency));
+        assertEquals(amount, accountDTO.getBalances().get(CurrencyEnum.valueOf(currency)));
         assertEquals(initialBalance.add(amount), finalBalance);
         verify(accountDAO, times(1)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(eq(1L), eq(currency), eq(amount), eq(TransactionType.DEPOSIT));
@@ -116,14 +116,14 @@ public class AccountServiceUT {
         // First time adding money (100)
         AccountDTO accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), firstAmount);
         assertNotNull(accountDTO);
-        assertEquals(firstAmount, accountDTO.getBalances().get(currency));
+        assertEquals(firstAmount, accountDTO.getBalances().get(CurrencyEnum.valueOf(currency)));
         verify(accountDAO, times(1)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(eq(1L), eq(currency), eq(firstAmount), eq(TransactionType.DEPOSIT));
 
         // Second time adding money (50, 150 in total)
         accountDTO = accountService.addMoney(1L, CurrencyEnum.valueOf(currency), secondAmount);
         assertNotNull(accountDTO);
-        assertEquals(firstAmount.add(secondAmount), accountDTO.getBalances().get(currency));
+        assertEquals(firstAmount.add(secondAmount), accountDTO.getBalances().get(CurrencyEnum.valueOf(currency)));
         verify(accountDAO, times(2)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(eq(1L), eq(currency), eq(secondAmount), eq(TransactionType.DEPOSIT));
     }
@@ -139,19 +139,19 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(currency, BigDecimal.valueOf(250.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.valueOf(currency), BigDecimal.valueOf(250.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
 
-        BigDecimal initialBalance = account.getBalances().get(currency);
+        BigDecimal initialBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertThrows(IllegalArgumentException.class, () -> {
             accountService.addMoney(1L, CurrencyEnum.valueOf(currency), amount);
         });
 
-        BigDecimal finalBalance = account.getBalances().get(currency);
+        BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertEquals(initialBalance, finalBalance);
         verify(accountDAO, never()).save(any(Account.class));
@@ -169,8 +169,8 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(currency, BigDecimal.valueOf(200.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.valueOf(currency), BigDecimal.valueOf(200.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
@@ -180,7 +180,7 @@ public class AccountServiceUT {
         AccountDTO accountDTO = accountService.debitMoney(1L, CurrencyEnum.valueOf(currency), amount);
 
         assertNotNull(accountDTO);
-        assertTrue(BigDecimal.valueOf(100.0).compareTo(accountDTO.getBalances().get(currency)) == 0);
+        assertTrue(BigDecimal.valueOf(100.0).compareTo(accountDTO.getBalances().get(CurrencyEnum.valueOf(currency))) == 0);
 
         verify(accountDAO, times(1)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(
@@ -202,19 +202,19 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(currency, BigDecimal.valueOf(250.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.valueOf(currency), BigDecimal.valueOf(250.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
 
-        BigDecimal initialBalance = account.getBalances().get(currency);
+        BigDecimal initialBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertThrows(IllegalArgumentException.class, () -> {
             accountService.debitMoney(1L, CurrencyEnum.valueOf(currency), amount);
         });
 
-        BigDecimal finalBalance = account.getBalances().get(currency);
+        BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertEquals(initialBalance, finalBalance);
         verify(accountDAO, never()).save(any(Account.class));
@@ -232,19 +232,19 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(currency, BigDecimal.valueOf(5.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.valueOf(currency), BigDecimal.valueOf(5.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
 
-        BigDecimal initialBalance = account.getBalances().get(currency);
+        BigDecimal initialBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertThrows(IllegalArgumentException.class, () -> {
             accountService.debitMoney(1L, CurrencyEnum.valueOf(currency), amount);
         });
 
-        BigDecimal finalBalance = account.getBalances().get(currency);
+        BigDecimal finalBalance = account.getBalances().get(CurrencyEnum.valueOf(currency));
 
         assertEquals(initialBalance, finalBalance);
         verify(accountDAO, never()).save(any(Account.class));
@@ -256,22 +256,22 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(CurrencyEnum.USD.name(), BigDecimal.valueOf(100.00));
-        balances.put(CurrencyEnum.EUR.name(), BigDecimal.valueOf(200.00));
-        balances.put(CurrencyEnum.SEK.name(), BigDecimal.valueOf(300.00));
-        balances.put(CurrencyEnum.RUB.name(), BigDecimal.valueOf(400.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.USD, BigDecimal.valueOf(100.00));
+        balances.put(CurrencyEnum.EUR, BigDecimal.valueOf(200.00));
+        balances.put(CurrencyEnum.SEK, BigDecimal.valueOf(300.00));
+        balances.put(CurrencyEnum.RUB, BigDecimal.valueOf(400.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
 
-        Map<String, BigDecimal> accountBalances = accountService.getAccountBalance(1L);
+        Map<CurrencyEnum, BigDecimal> accountBalances = accountService.getAccountBalance(1L);
 
         assertNotNull(accountBalances);
-        assertEquals(BigDecimal.valueOf(100.00), accountBalances.get(CurrencyEnum.USD.name()));
-        assertEquals(BigDecimal.valueOf(200.00), accountBalances.get(CurrencyEnum.EUR.name()));
-        assertEquals(BigDecimal.valueOf(300.00), accountBalances.get(CurrencyEnum.SEK.name()));
-        assertEquals(BigDecimal.valueOf(400.00), accountBalances.get(CurrencyEnum.RUB.name()));
+        assertEquals(BigDecimal.valueOf(100.00), accountBalances.get(CurrencyEnum.USD));
+        assertEquals(BigDecimal.valueOf(200.00), accountBalances.get(CurrencyEnum.EUR));
+        assertEquals(BigDecimal.valueOf(300.00), accountBalances.get(CurrencyEnum.SEK));
+        assertEquals(BigDecimal.valueOf(400.00), accountBalances.get(CurrencyEnum.RUB));
         verify(accountDAO, times(1)).findById(1L);
     }
 
@@ -286,11 +286,11 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(CurrencyEnum.USD.name(), BigDecimal.valueOf(100.00));
-        balances.put(CurrencyEnum.EUR.name(), BigDecimal.valueOf(200.00));
-        balances.put(CurrencyEnum.SEK.name(), BigDecimal.valueOf(300.00));
-        balances.put(CurrencyEnum.RUB.name(), BigDecimal.valueOf(400.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.USD, BigDecimal.valueOf(100.00));
+        balances.put(CurrencyEnum.EUR, BigDecimal.valueOf(200.00));
+        balances.put(CurrencyEnum.SEK, BigDecimal.valueOf(300.00));
+        balances.put(CurrencyEnum.RUB, BigDecimal.valueOf(400.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
@@ -301,7 +301,7 @@ public class AccountServiceUT {
         AccountDTO accountDTO = accountService.exchangeCurrency(1L, CurrencyEnum.valueOf(fromCurrency), CurrencyEnum.valueOf(toCurrency), amount);
 
         assertNotNull(accountDTO);
-        assertEquals(accountDTO.getBalances().get(fromCurrency), balances.get(fromCurrency));
+        assertEquals(accountDTO.getBalances().get(CurrencyEnum.valueOf(fromCurrency)), balances.get(CurrencyEnum.valueOf(fromCurrency)));
         verify(accountDAO, times(1)).save(any(Account.class));
         verify(transactionService, times(1)).saveTransaction(
                 eq(1L),
@@ -317,13 +317,13 @@ public class AccountServiceUT {
         );
 
         // Update the initial balances to reflect the new state after the exchange
-        balances.put(fromCurrency, balances.get(fromCurrency).subtract(amount));
-        balances.put(toCurrency, balances.get(toCurrency).add(expectedConvertedAmount));
+        balances.put(CurrencyEnum.valueOf(fromCurrency), balances.get(CurrencyEnum.valueOf(fromCurrency)).subtract(amount));
+        balances.put(CurrencyEnum.valueOf(toCurrency), balances.get(CurrencyEnum.valueOf(toCurrency)).add(expectedConvertedAmount));
 
         // Check if the account balance is correct after the exchange
-        Map<String, BigDecimal> finalBalances = accountService.getAccountBalance(1L);
-        assertEquals(balances.get(fromCurrency), finalBalances.get(fromCurrency));
-        assertEquals(balances.get(toCurrency), finalBalances.get(toCurrency));
+        Map<CurrencyEnum, BigDecimal> finalBalances = accountService.getAccountBalance(1L);
+        assertEquals(balances.get(CurrencyEnum.valueOf(fromCurrency)), finalBalances.get(CurrencyEnum.valueOf(fromCurrency)));
+        assertEquals(balances.get(CurrencyEnum.valueOf(toCurrency)), finalBalances.get(CurrencyEnum.valueOf(toCurrency)));
     }
 
     @ParameterizedTest
@@ -337,24 +337,24 @@ public class AccountServiceUT {
         Account account = new Account();
         account.setId(1L);
         account.setAccountNumber("12345");
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(CurrencyEnum.USD.name(), BigDecimal.valueOf(100.00));
-        balances.put(CurrencyEnum.EUR.name(), BigDecimal.valueOf(200.00));
-        balances.put(CurrencyEnum.SEK.name(), BigDecimal.valueOf(300.00));
-        balances.put(CurrencyEnum.RUB.name(), BigDecimal.valueOf(400.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.USD, BigDecimal.valueOf(100.00));
+        balances.put(CurrencyEnum.EUR, BigDecimal.valueOf(200.00));
+        balances.put(CurrencyEnum.SEK, BigDecimal.valueOf(300.00));
+        balances.put(CurrencyEnum.RUB, BigDecimal.valueOf(400.00));
         account.setBalances(balances);
 
         when(accountDAO.findById(1L)).thenReturn(Optional.of(account));
 
-        BigDecimal initialFromBalance = account.getBalances().get(fromCurrency);
-        BigDecimal initialToBalance = account.getBalances().get(toCurrency);
+        BigDecimal initialFromBalance = account.getBalances().get(CurrencyEnum.valueOf(fromCurrency));
+        BigDecimal initialToBalance = account.getBalances().get(CurrencyEnum.valueOf(toCurrency));
 
         assertThrows(IllegalArgumentException.class, () -> {
             accountService.exchangeCurrency(1L, CurrencyEnum.valueOf(fromCurrency), CurrencyEnum.valueOf(toCurrency), amount);
         });
 
-        BigDecimal finalFromBalance = account.getBalances().get(fromCurrency);
-        BigDecimal finalToBalance = account.getBalances().get(toCurrency);
+        BigDecimal finalFromBalance = account.getBalances().get(CurrencyEnum.valueOf(fromCurrency));
+        BigDecimal finalToBalance = account.getBalances().get(CurrencyEnum.valueOf(toCurrency));
 
         assertEquals(initialFromBalance, finalFromBalance);
         assertEquals(initialToBalance, finalToBalance);

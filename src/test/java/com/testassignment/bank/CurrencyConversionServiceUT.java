@@ -35,11 +35,11 @@ public class CurrencyConversionServiceUT {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         account = new Account();
-        Map<String, BigDecimal> balances = new HashMap<>();
-        balances.put(CurrencyEnum.USD.name(), BigDecimal.valueOf(100.00));
-        balances.put(CurrencyEnum.EUR.name(), BigDecimal.valueOf(200.00));
-        balances.put(CurrencyEnum.SEK.name(), BigDecimal.valueOf(300.00));
-        balances.put(CurrencyEnum.RUB.name(), BigDecimal.valueOf(400.00));
+        Map<CurrencyEnum, BigDecimal> balances = new HashMap<>();
+        balances.put(CurrencyEnum.USD, BigDecimal.valueOf(100.00));
+        balances.put(CurrencyEnum.EUR, BigDecimal.valueOf(200.00));
+        balances.put(CurrencyEnum.SEK, BigDecimal.valueOf(300.00));
+        balances.put(CurrencyEnum.RUB, BigDecimal.valueOf(400.00));
         account.setBalances(balances);
     }
 
@@ -62,7 +62,7 @@ public class CurrencyConversionServiceUT {
         BigDecimal convertedAmount = currencyConversionService.convert(account, CurrencyEnum.valueOf(fromCurrency), CurrencyEnum.valueOf(toCurrency), amount);
 
         assertEquals(expectedConvertedAmount.setScale(2, BigDecimal.ROUND_HALF_UP), convertedAmount);
-        assertEquals(account.getBalances().get(toCurrency).setScale(2, BigDecimal.ROUND_HALF_UP), account.getBalances().get(toCurrency));
+        assertEquals(account.getBalances().get(CurrencyEnum.valueOf(toCurrency)).setScale(2, BigDecimal.ROUND_HALF_UP), account.getBalances().get(CurrencyEnum.valueOf(toCurrency)));
     }
 
     @ParameterizedTest
