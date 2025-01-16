@@ -1,7 +1,6 @@
 package com.testassignment.bank.integration;
 
 import com.testassignment.bank.dao.AccountDAO;
-import com.testassignment.bank.dto.AccountDTO;
 import com.testassignment.bank.entity.Account;
 import com.testassignment.bank.entity.Transaction;
 import com.testassignment.bank.enums.CurrencyEnum;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -380,5 +378,4 @@ public class AccountControllerIntegrationTest {
                 .andExpect(jsonPath("$.details[0]").value("No value present"))
                 .andExpect(jsonPath("$.statusCode").value(404));
     }
-
 }
