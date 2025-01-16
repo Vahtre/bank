@@ -35,8 +35,8 @@ This is a Spring Boot-based bank application that provides various banking servi
 
 1. **Clone the repository**:
    ```sh
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/Vahtre/bank.git
+   cd https://github.com/Vahtre/bank.git
    ```
    
 
