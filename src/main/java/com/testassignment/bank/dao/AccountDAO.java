@@ -22,8 +22,4 @@ public class AccountDAO {
     public Optional<Account> findById(Long id) {
         return accountRepository.findById(id);
     }
-
-    public void deleteById(Long id) {
-        accountRepository.deleteById(id);
-    }
 }

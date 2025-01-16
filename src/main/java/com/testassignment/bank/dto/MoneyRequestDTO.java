@@ -16,20 +16,4 @@ public class MoneyRequestDTO {
     @Positive(message = "Amount must be positive")
     @Digits(integer = 10, fraction = 2, message = "Amount cannot have more than 2 decimal places")
     private Double amount;
-
-    public CurrencyEnum getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyEnum currency) {
-        this.currency = currency;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
 }

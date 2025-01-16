@@ -5,7 +5,6 @@ import com.testassignment.bank.repository.TransactionRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class TransactionDAO {
@@ -18,14 +17,6 @@ public class TransactionDAO {
 
     public void save(Transaction transaction) {
         transactionRepository.save(transaction);
-    }
-
-    public Optional<Transaction> findById(Long id) {
-        return transactionRepository.findById(id);
-    }
-
-    public void deleteById(Long id) {
-        transactionRepository.deleteById(id);
     }
 
     public List<Transaction> findByAccountId(Long accountId) {

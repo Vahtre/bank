@@ -2,10 +2,12 @@ package com.testassignment.bank.entity;
 
 import com.testassignment.bank.enums.CurrencyEnum;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Entity
+@Data
 public class CurrencyConversionRate {
 
     @Id
@@ -19,36 +21,4 @@ public class CurrencyConversionRate {
     private CurrencyEnum toCurrency;
 
     private BigDecimal rate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public CurrencyEnum getFromCurrency() {
-        return fromCurrency;
-    }
-
-    public void setFromCurrency(CurrencyEnum fromCurrency) {
-        this.fromCurrency = fromCurrency;
-    }
-
-    public CurrencyEnum getToCurrency() {
-        return toCurrency;
-    }
-
-    public void setToCurrency(CurrencyEnum toCurrency) {
-        this.toCurrency = toCurrency;
-    }
-
-    public BigDecimal getRate() {
-        return rate;
-    }
-
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
-    }
 }

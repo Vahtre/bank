@@ -3,10 +3,31 @@
 ## Description
 This is a Spring Boot-based bank application that provides various banking services such as account creation, balance inquiry, transaction history, money deposit, money debit, and currency exchange.
 
+## Assumptions
+- Each account starts with a balance of 0 units in each supported currency.
+- The application supports four currencies: USD, EUR, SEK, and RUB.
+- Currency conversion rates are predefined and stored in the database.
+- Transactions are recorded with a timestamp and stored in the database.
+- The application assumes that the account ID is unique and valid.
+
+## Design Decisions
+- **Spring Boot**: Chosen for its ease of use and rapid development capabilities.
+- **Gradle**: Used as the build tool for its flexibility and performance.
+- **RESTful API**: The application exposes RESTful endpoints for account operations.
+- **Validation**: Input validation is performed using Jakarta Bean Validation.
+- **Transaction Service**: A dedicated service is used to handle transaction history and ensure consistency.
+- **BigDecimal**: Used for monetary values to avoid precision issues.
+
+## Limitations
+- The application does not support concurrent transactions on the same account.
+- Currency conversion rates are static and do not update in real-time.
+- The application does not handle multi-currency transactions within a single request.
+- The application does not include authentication or authorization mechanisms.
+
 ## Setup Instructions
 
 ### Prerequisites
-- Java 17
+- Java 17 or higher
 - Docker
 - Gradle
 
@@ -38,6 +59,19 @@ This is a Spring Boot-based bank application that provides various banking servi
 
 5. **Access the application**:
    Open your browser and navigate to `http://localhost:8080`.
+
+### Running Tests
+To run the unit tests, use the following command:
+```sh
+./gradlew test
+```
+### Note
+- BankApplicationTests.contextLoads() test will fail if you are running application while running the test
+
+To run the integration tests, use the following command:
+```sh
+./gradlew test integrationTest
+```
 
 ## API Documentation
 
@@ -71,7 +105,7 @@ This is a Spring Boot-based bank application that provides various banking servi
           "currency": "USD",
           "amount": 100.00,
           "timestamp": "2023-10-01T10:00:00Z",
-          "type": "DEPOSIT",
+          "type": "DEPOSIT"
         }
       ]
       ```
