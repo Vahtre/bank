@@ -38,7 +38,6 @@ This is a Spring Boot-based bank application that provides various banking servi
    git clone https://github.com/Vahtre/bank.git
    cd https://github.com/Vahtre/bank.git
    ```
-   
 
 ### Steps to Set Up and Run the Application
 

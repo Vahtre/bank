@@ -62,7 +62,6 @@ public class CurrencyConversionServiceUT {
 
         BigDecimal convertedAmount = currencyConversionService.convert(account, CurrencyEnum.valueOf(fromCurrency), CurrencyEnum.valueOf(toCurrency), amount);
 
-
         assertEquals(expectedConvertedAmount.setScale(2, RoundingMode.HALF_UP), convertedAmount);
         assertEquals(account.getBalances().get(CurrencyEnum.valueOf(toCurrency)).setScale(2, RoundingMode.HALF_UP), account.getBalances().get(CurrencyEnum.valueOf(toCurrency)));
     }
