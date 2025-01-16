@@ -44,15 +44,20 @@ public class AccountService {
         account.setBalances(balances);
 
         Account savedAccount = accountDAO.save(account);
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
         return AccountDTO.fromEntity(savedAccount);
     }
 
     public AccountDTO depositMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
-        return updateBalance(accountId, currency, amount, TransactionType.DEPOSIT);
+        AccountDTO accountDTO = updateBalance(accountId, currency, amount, TransactionType.DEPOSIT);
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
+        return accountDTO;
     }
 
     public AccountDTO debitMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
-        return updateBalance(accountId, currency, amount, TransactionType.DEBIT);
+        AccountDTO accountDTO =updateBalance(accountId, currency, amount, TransactionType.DEBIT);
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
+        return accountDTO;
     }
 
     private AccountDTO updateBalance(Long accountId, CurrencyEnum currency, BigDecimal amount, TransactionType transactionType) {
@@ -77,13 +82,14 @@ public class AccountService {
         accountDAO.save(account);
         transactionService.saveTransaction(accountId, currency.name(), transactionType == TransactionType.DEBIT ? roundedAmount.negate() : roundedAmount, transactionType);
 
-        restTemplate.getForObject("https://httpstat.us/200", String.class);
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
 
         return AccountDTO.fromEntity(account);
     }
 
     public Map<CurrencyEnum, BigDecimal> getAccountBalance(Long accountId) {
         Account account = accountDAO.findById(accountId).orElseThrow();
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
         return account.getBalances();
     }
 
@@ -101,11 +107,13 @@ public class AccountService {
         transactionService.saveTransaction(account.getId(), fromCurrency.name(), amount.negate(), TransactionType.EXCHANGE);
         transactionService.saveTransaction(account.getId(), toCurrency.name(), convertedAmount, TransactionType.EXCHANGE);
 
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
         return AccountDTO.fromEntity(account);
     }
 
     public List<Transaction> getAccountTransactionHistory(Long accountId) {
         accountDAO.findById(accountId).orElseThrow(() -> new NoSuchElementException("No value present"));
+        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
         return transactionService.getTransactionHistory(accountId);
     }
 
