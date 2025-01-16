@@ -49,15 +49,11 @@ public class AccountService {
     }
 
     public AccountDTO depositMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
-        AccountDTO accountDTO = updateBalance(accountId, currency, amount, TransactionType.DEPOSIT);
-        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
-        return accountDTO;
+        return updateBalance(accountId, currency, amount, TransactionType.DEPOSIT);
     }
 
     public AccountDTO debitMoney(Long accountId, CurrencyEnum currency, BigDecimal amount) {
-        AccountDTO accountDTO =updateBalance(accountId, currency, amount, TransactionType.DEBIT);
-        restTemplate.postForObject("https://httpstat.us/200", null, String.class);
-        return accountDTO;
+        return updateBalance(accountId, currency, amount, TransactionType.DEBIT);
     }
 
     private AccountDTO updateBalance(Long accountId, CurrencyEnum currency, BigDecimal amount, TransactionType transactionType) {
